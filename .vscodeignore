@@ -1,0 +1,10 @@
+.vscode/**
+src/**
+docs/**
+node_modules/**
+out/test/**
+**/*.map
+.gitignore
+tsconfig.json
+package-lock.json
+vscode-project-switcher-plan.md

@@ -1,0 +1,21 @@
+# Project Switcher feature designs
+
+Start with the baseline, then read the additions:
+
+1. [Project switcher overview](project-switcher/overview.md) and [proposal](project-switcher/proposal.md): saved projects (any local folder; Git optional), from-scratch creation, sidebar, quick picker, window choices, packaging, and baseline acceptance criteria.
+2. [Project worktrees and open windows overview](project-worktrees/overview.md) and [proposal](project-worktrees/proposal.md): worktree creation, OpenCode, new-worktree windows, and project-aware navigation to already-open windows.
+3. [Open Windows view overview](open-windows/overview.md) and [proposal](open-windows/proposal.md): a persistent sidebar view of all live windows with click-to-focus. P-01 through P-06 are accepted. [Slice 01](open-windows/slices/01-open-windows-view.md) is implemented and unit-tested; manual runtime verification is pending.
+4. [Cross-profile window discovery overview](cross-profile-windows/overview.md) and [proposal](cross-profile-windows/proposal.md): the window registry moved to the shared home-dir root, making windows visible across profiles. P-01 through P-03 are accepted. [Slice 01](cross-profile-windows/slices/01-shared-registry-root.md) is implemented, unit-verified, and installed as 0.3.0; runtime cross-profile checks are pending.
+5. [Close window overview](close-window/overview.md) and [proposal](close-window/proposal.md): realize baseline B-09 through a registry close request. P-01 through P-04 are accepted, including placement. [Slice 01](close-window/slices/01-close-a-listed-window.md) is code complete, unit-tested (151 pass), and installed as 0.4.0 in the default profile; the manual runtime checklist is being verified live there.
+6. [Worktree removal overview](worktree-removal/overview.md) and [proposal](worktree-removal/proposal.md): destroy a linked worktree and its branch, with explicit force and close-first behavior. P-01 through P-05 are accepted. [Slice 01](worktree-removal/slices/01-destroy-a-linked-worktree.md) is code complete and unit-tested (178 pass); manual runtime verification is pending.
+7. [Open Windows indicators overview](open-windows-indicators/overview.md) and [proposal](open-windows-indicators/proposal.md): OpenCode attention badges (waiting, finished) and a colored current window in the Open Windows view. P-01 through P-06 are accepted. [Slice 01](open-windows-indicators/slices/01-current-window-color.md) is implemented and unit-tested; manual runtime verification is pending. Slice 02 exists as an outline.
+
+## Status and navigation rules
+
+- The baseline was consolidated from the original root plan. B-05 replaces parts of B-01 and B-04; detailed contracts remain open.
+- Accepted choices and proposed mechanics are labeled in each proposal. Saving these documents does not authorize implementation.
+- Selecting an already-open checkout focuses its window. Direct current/new window actions skip a separate prompt. Worktree creation is implemented separately.
+- [B-11](project-switcher/proposal.md#b-11-shared-private-saved-project-store) accepts private cross-profile storage. Its implementation and tests exist; recovery and older-version coexistence remain open.
+- [B-12 and B-13](project-switcher/proposal.md#b-12-a-project-is-any-local-folder-git-is-optional) accept any-folder projects and Git-gated worktree actions. [Baseline slice 01](project-switcher/slices/01-any-folder-projects.md) is ready for handoff; implementation has not started. [Slice 02](project-switcher/slices/02-new-project-from-scratch.md) covers from-scratch creation and is ready for handoff; implementation has not started.
+- The extension implementation is partial. Automated tests and local packaging passed; actual VS Code window behavior and the installed VSIX remain unverified. Automatic OpenCode launch is currently skipped. Window closing is designed under [close-window](close-window/proposal.md) but not implemented or verified; the B-09 delivery condition still applies.
+- `vscode-project-switcher-plan.md` at the repository root remains an unchanged historical source. The consolidated baseline here contains its design content; its later removal is a separate operation outside this design session's edit scope.

@@ -1,0 +1,209 @@
+{
+  "name": "project-switcher",
+  "displayName": "Project Switcher",
+  "description": "Save local project folders and switch between VS Code windows.",
+  "version": "0.5.1",
+  "publisher": "local",
+  "private": true,
+  "engines": {
+    "vscode": "^1.144.1"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Creating worktrees and running project tools require trusted workspaces."
+    },
+    "virtualWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "configuration": {
+      "title": "Projects",
+      "properties": {
+        "projectSwitcher.worktreesDirectory": {
+          "type": "string",
+          "scope": "application",
+          "ignoreSync": true,
+          "default": "/Users/diogocoelho/repos/worktrees",
+          "description": "Shared parent directory for newly created project worktrees."
+        },
+        "projectSwitcher.projectsDirectory": {
+          "type": "string",
+          "scope": "application",
+          "ignoreSync": true,
+          "default": "/Users/diogocoelho/repos",
+          "description": "Default parent directory for newly created project folders."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "projectSwitcher.add",
+        "title": "Add Project",
+        "category": "Projects",
+        "icon": "$(add)"
+      },
+      {
+        "command": "projectSwitcher.newProject",
+        "title": "New Project",
+        "category": "Projects",
+        "icon": "$(new-folder)",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "projectSwitcher.remove",
+        "title": "Remove Project",
+        "category": "Projects",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "projectSwitcher.createWorktree",
+        "title": "Create Worktree",
+        "category": "Projects",
+        "icon": "$(git-branch)",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "projectSwitcher.destroyWorktree",
+        "title": "Destroy Worktree",
+        "category": "Projects",
+        "icon": "$(trash)",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "projectSwitcher.switch",
+        "title": "Switch Project",
+        "category": "Projects",
+        "icon": "$(search)"
+      },
+      {
+        "command": "projectSwitcher.openHere",
+        "title": "Open Here",
+        "category": "Projects",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "projectSwitcher.openNewWindow",
+        "title": "Open in New Window",
+        "category": "Projects",
+        "icon": "$(new-window)"
+      },
+      {
+        "command": "projectSwitcher.openWindows",
+        "title": "Switch to Open Project Window",
+        "category": "Projects"
+      },
+      {
+        "command": "projectSwitcher.closeWindow",
+        "title": "Close Window",
+        "category": "Projects",
+        "icon": "$(close)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "projectSwitcher",
+          "title": "Projects",
+          "icon": "media/projects.svg"
+        }
+      ]
+    },
+    "views": {
+      "projectSwitcher": [
+        {
+          "id": "projectSwitcher.projects",
+          "name": "Projects"
+        },
+        {
+          "id": "projectSwitcher.windows",
+          "name": "Open Windows"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "projectSwitcher.projects",
+        "contents": "[Add Project](command:projectSwitcher.add)\n[New Project](command:projectSwitcher.newProject)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "projectSwitcher.add",
+          "when": "view == projectSwitcher.projects",
+          "group": "navigation@1"
+        },
+        {
+          "command": "projectSwitcher.newProject",
+          "when": "view == projectSwitcher.projects",
+          "group": "navigation@2"
+        },
+        {
+          "command": "projectSwitcher.switch",
+          "when": "view == projectSwitcher.projects",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "projectSwitcher.createWorktree",
+          "when": "view == projectSwitcher.projects && viewItem == projectGit",
+          "group": "inline@0"
+        },
+        {
+          "command": "projectSwitcher.destroyWorktree",
+          "when": "view == projectSwitcher.projects && viewItem == checkoutLinked",
+          "group": "inline@3"
+        },
+        {
+          "command": "projectSwitcher.openHere",
+          "when": "view == projectSwitcher.projects && (viewItem == projectGit || viewItem == projectPlain || viewItem =~ /^checkout/)",
+          "group": "inline@1"
+        },
+        {
+          "command": "projectSwitcher.openNewWindow",
+          "when": "view == projectSwitcher.projects && (viewItem == projectGit || viewItem == projectPlain || viewItem =~ /^checkout/)",
+          "group": "inline@2"
+        },
+        {
+          "command": "projectSwitcher.remove",
+          "when": "view == projectSwitcher.projects && (viewItem == projectGit || viewItem == projectPlain)",
+          "group": "inline"
+        },
+        {
+          "command": "projectSwitcher.closeWindow",
+          "when": "view == projectSwitcher.windows && (viewItem == windowCurrent || viewItem == windowOther)",
+          "group": "inline@0"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "bundle": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --sourcemap",
+    "test": "npm run compile && node --test out/test/*.test.js",
+    "package": "npm run compile && npm run bundle && vsce package --allow-missing-repository --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/vscode": "1.144.0",
+    "@vscode/vsce": "^3.6.2",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@opencode/client": "^2.4.1"
+  }
+}
